@@ -1,0 +1,74 @@
+body {
+    margin: 0;
+    font-family: Helvetica, sans-serif;
+}
+
+.map-container {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+.panel-container {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    width: 100vw;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+.place-body-template {
+    display: none;
+}
+
+.place-head-template {
+    display: none;
+}
+
+.place-panel {
+    margin: 0 5px 5px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+}
+
+.place-body-placeholder {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.place-body-placeholder-text {
+    color: #888888;
+    text-decoration: none;
+}
+
+.place-title {
+    font-size: 18px;
+    color: #111111;
+}
+
+.place-date {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #888888;
+}
+
+.place-address {
+    margin-top: 4px;
+    font-size: 15px;
+    color: #444444;
+}
+
+.place-content {
+    margin-top: 12px;
+    border-top: 1px solid #888888;
+    padding-top: 8px;
+    color: #444444;
+}

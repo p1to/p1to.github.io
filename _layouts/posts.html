@@ -1,0 +1,114 @@
+---
+layout: default
+---
+<div class="map-container" id="map-container">
+    <div class="panel-container">
+        <div class="place-panel" id="place-panel">
+            <div class="place-panel-head" id="place-panel-head"></div>
+            <div class="place-panel-body" id="place-panel-body"></div>
+        </div>
+    </div>
+</div>
+
+<div class="place-body-template" id="place-body-template">
+    <div class="place-body-placeholder place-body-placeholder-text">
+        <a class="place-body-placeholder-text fa fa-bars" href="#"></a>
+    </div>
+</div>
+
+{% for post in site.posts %}
+    {% if post.addr %}
+        <div class="place-head-template"
+             data-title="{{ post.title | smartify }}"
+             data-date="{{ post.date | date_to_string }}"
+             data-addr="{{ post.addr | smartify }}"
+        >
+            <div class="head-template">
+                <div class="place-title">{{ post.title }}</div>
+                <div class="place-date">{{ post.date | date_to_string }}</div>
+                <div class="place-address">{{ post.addr }}</div>
+            </div>
+            <div class="body-template">
+                <div class="place-content">{{ post.content }}</div>
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId={{ site.naver.client }}&amp;submodules=geocoder"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var panel = $("#place-panel");
+        var panelHead = $("#place-panel-head");
+        var panelBody = $("#place-panel-body");
+
+        panel.hide();
+
+        var bodyPlaceHolder = $("#place-body-template").html();
+        var places = $(".place-head-template").map(function () {
+            var place = $(this);
+            var data = place.data();
+            data.head = place.find(".head-template").html();
+            data.body = place.find(".body-template").html();
+            return data;
+        });
+
+        var map = new N.Map("map-container");
+
+        N.Event.addListener(map, "click", function () {
+            panel.hide();
+        });
+
+        var deferreds = $.map(places, function (place) {
+            return $.Deferred(function (deferred) {
+                N.Service.geocode({
+                    address: place.addr
+                }, function (status, response) {
+                    if (status === N.Service.Status.ERROR) {
+                        deferred.resolve(null);
+                        return;
+                    }
+                    if (response.result.total === 0) {
+                        deferred.resolve(null);
+                        return;
+                    }
+
+                    var point = response.result.items[0].point;
+                    var marker = new N.Marker({
+                        position: point,
+                        map: map
+                    });
+                    N.Event.addListener(marker, "click", function () {
+                        panelHead.html(place.head);
+                        panelBody.html(bodyPlaceHolder);
+                        panel.show();
+                        panelBody.find(".place-body-placeholder").click(function () {
+                            panelBody.html(place.body);
+                        });
+                    });
+
+                    place.point = point;
+                    place.marker = marker;
+                    deferred.resolve(place);
+                });
+            });
+        });
+
+        $.when.apply($, deferreds).then(function () {
+            var places = $.grep(arguments, function (place) {
+                return place !== null;
+            });
+            var points = $.map(places, function (place) {
+                return place.point;
+            });
+            if (points.length === 1) {
+                map.setCenter(points[0]);
+            } else if (points.length > 1) {
+                var bounds = N.PointBounds.bounds.apply($, points);
+                map.fitBounds(bounds);
+            }
+        });
+    });
+</script>
