@@ -72,3 +72,8 @@ body {
     padding-top: 8px;
     color: #444444;
 }
+
+.place-content p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
