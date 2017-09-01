@@ -81,6 +81,7 @@ layout: default
                         map: map
                     });
                     N.Event.addListener(marker, "click", function () {
+                        map.setCenter(place.point);
                         panelHead.html(place.head);
                         panelBody.html(bodyPlaceHolder);
                         panel.show();
