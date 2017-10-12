@@ -10,12 +10,6 @@ layout: default
     </div>
 </div>
 
-<div class="place-body-template" id="place-body-template">
-    <div class="place-body-placeholder place-body-placeholder-text">
-        <a class="place-body-placeholder-text fa fa-bars" href="#"></a>
-    </div>
-</div>
-
 {% for post in site.posts %}
     {% if post.addr %}
         <div class="place-head-template"
@@ -46,7 +40,6 @@ layout: default
 
         panel.hide();
 
-        var bodyPlaceHolder = $("#place-body-template").html();
         var places = $(".place-head-template").map(function () {
             var place = $(this);
             var data = place.data();
@@ -83,11 +76,8 @@ layout: default
                     N.Event.addListener(marker, "click", function () {
                         map.setCenter(place.point);
                         panelHead.html(place.head);
-                        panelBody.html(bodyPlaceHolder);
+                        panelBody.html(place.body);
                         panel.show();
-                        panelBody.find(".place-body-placeholder").click(function () {
-                            panelBody.html(place.body);
-                        });
                     });
 
                     place.point = point;
